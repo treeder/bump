@@ -4,15 +4,6 @@ set -ex
 USERNAME=treeder
 IMAGE=bump
 
-# ensure working dir is clean
-# if [[ -z $(git status -s) ]]
-# then
-#   echo "tree is clean"
-# else
-#   echo "tree is dirty, please commit changes before running this"
-#   exit 1
-# fi
-
 # Get latest
 git pull
 
@@ -26,9 +17,8 @@ echo "version: $version"
 # tag it
 git add -A
 git commit -m "version $version"
-git tag -a "$version" -m "version $version"
-git push
-git push --tags
+git tag -a "v$version" -m "version $version"
+git push --follow-tags
 
 docker tag $USERNAME/$IMAGE:latest $USERNAME/$IMAGE:$version
 
