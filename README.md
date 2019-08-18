@@ -5,8 +5,10 @@ Bumps version files and other handy version tools.
 ## Usage
 
 ```sh
-docker run --rm -it -v $PWD:/app -w /app treeder/bump [--filename FILENAME] [CMD]
+docker run --rm -it -v $PWD:/app -w /app treeder/bump [--filename FILENAME] [--input STRING] [CMD]
 ```
+
+You must pass in either `--filename` or `--input`.
 
 CMD can be one of:
 
