@@ -8,5 +8,3 @@ echo "newv: $newv"
 
 git tag -a "v$newv" -m "version $newv"
 git push --follow-tags
-
-#
