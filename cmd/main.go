@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -68,16 +67,14 @@ func bumper(c *cli.Context) error {
 	filename := c.String("filename")
 	if c.IsSet("input") {
 		vbytes = []byte(c.String("input"))
-	} else if c.IsSet("filename") {
+	} else {
 		vbytes, err = ioutil.ReadFile(filename)
 		if err != nil {
-			log.Fatal(err)
+			if os.IsNotExist(err) {
+				return fmt.Errorf("%v not found. Use either --filename or --input to change where to look for version.", filename)
+			}
+			return err
 		}
-	} else {
-		if len(c.Args()) == 0 {
-			return cli.ShowAppHelp(c)
-		}
-		return errors.New("either filename or input flag must be used")
 	}
 
 	old, new, _, newcontent, err := bump.BumpInContent(vbytes, arg)
