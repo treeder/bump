@@ -12,7 +12,7 @@ You must pass in either `--filename` or `--input`.
 
 If using `--filename`, it will overwrite the file with the new version in place, great for automation.
 
-If using `--input`, it will just write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable. 
+If using `--input`, it will write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable. 
 
 CMD can be one of:
 
