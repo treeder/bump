@@ -86,8 +86,8 @@ func bumper(c *cli.Context) error {
 		return nil
 	}
 
-	fmt.Fprintln(os.Stderr, "Old version:", old)
-	fmt.Fprintln(os.Stderr, "New version:", new)
+	//	fmt.Fprintln(os.Stderr, "Old version:", old)
+	//	fmt.Fprintln(os.Stderr, "New version:", new)
 	if !c.IsSet("input") {
 		err = ioutil.WriteFile(filename, newcontent, 0644)
 		if err != nil {
