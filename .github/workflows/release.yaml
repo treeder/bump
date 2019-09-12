@@ -22,7 +22,7 @@ jobs:
       
     - name: release
       env:
-        # I couldn't get the releases to work with the GITHUB_TOKEN so made secrets... :(
+        X: Y
         #GH_DEPLOY_USER: ${{ secrets.GH_DEPLOY_USER }}
         #GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
       run: |
