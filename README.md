@@ -28,9 +28,12 @@ docker run --rm -it -v $PWD:/app -w /app treeder/bump --filename $version_file "
 
 ## Bump a Git Version
 
-Copy and run `gitbump.sh` to automatically get the most recent version, bump it, then push the new tag.
+The `gitbump.sh` script will automatically bump your git tags. It will get the most recent version, bump it, 
+then push the new tag.
 
-Or just run this:
+NOTE: Ensure at least one version tag exists in the repo, eg: v0.0.0 must already exist.
+
+Or just run this if you don't want to download the script:
 
 ```sh
 wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
