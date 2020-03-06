@@ -26,5 +26,5 @@ jobs:
         #GH_DEPLOY_USER: ${{ secrets.GH_DEPLOY_USER }}
         #GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
       run: |
+        git tag
         ./release.sh
-        
