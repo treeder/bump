@@ -20,6 +20,10 @@ jobs:
         go-version: 1.14
       id: go
 
+    - name: Build
+      run: |
+        make docker
+
     - name: release
       env:
         X: Y
