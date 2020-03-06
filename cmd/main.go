@@ -81,7 +81,7 @@ func bumper(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if c.Bool("extract") || c.String("format") != "" {
+	if c.Bool("extract") {
 		print(c, old)
 		return nil
 	}
@@ -101,7 +101,7 @@ func bumper(c *cli.Context) error {
 func print(c *cli.Context, version string) {
 	format := c.String("format")
 	if format == "" {
-		fmt.Println(version)
+		fmt.Print(version)
 		return
 	}
 
@@ -119,5 +119,5 @@ func print(c *cli.Context, version string) {
 			b.WriteRune(char)
 		}
 	}
-	fmt.Println(b.String())
+	fmt.Print(b.String())
 }
