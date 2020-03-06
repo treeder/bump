@@ -23,9 +23,24 @@ jobs:
     - name: release
       env:
         X: Y
-        #GH_DEPLOY_USER: ${{ secrets.GH_DEPLOY_USER }}
-        #GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+        env:
+        # I couldn't get the releases to work with the GITHUB_TOKEN so made secrets... :(
+        # GH_DEPLOY_USER: ${{ secrets.GH_DEPLOY_USER }}
+        # GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        IMAGE: treeder/bump
       run: |
         git fetch --tags
         git tag
-        ./release.sh
+        git config --global user.email "treeder+github@gmail.com"
+        git config --global user.name "Github Action"
+        wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
+        version=$(git tag --sort=-refname --list "v[0-9]*" | head -n 1)
+        echo "new version $version"
+
+        # docker it
+        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+        docker tag $IMAGE:latest $IMAGE:$version
+        docker push $IMAGE:latest
+        docker push $IMAGE:$version
