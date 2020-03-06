@@ -22,6 +22,7 @@ git pull
 # not using the file anymore, just git tags
 wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
 version=$(git tag --sort=-refname --list "v[0-9]*" | head -n 1)
+echo "new version $version"
 
 # docker it
 echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
