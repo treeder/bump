@@ -37,6 +37,14 @@ func main() {
 			Name:  "format",
 			Usage: "either M for major, M-m for major-minor or M-m-p",
 		},
+		cli.StringFlag{
+			Name:  "replace",
+			Usage: "overwrites the version with what you pass in here",
+		},
+		cli.IntFlag{
+			Name:  "index",
+			Usage: "if zero (default), uses first match. If greater than zero, uses nth match. If less than zero, starts at last match and goes backwards, ie: last match is -1.",
+		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
@@ -77,7 +85,17 @@ func bumper(c *cli.Context) error {
 		}
 	}
 
-	old, new, _, newcontent, err := bump.BumpInContent(vbytes, arg)
+	index := c.Int("index")
+
+	var old, new string
+	var newcontent []byte
+	if c.IsSet("replace") {
+		// this will just write the passed in version directly
+		replace := c.String("replace")
+		old, new, _, newcontent, err = bump.ReplaceInContent(vbytes, replace, index)
+	} else {
+		old, new, _, newcontent, err = bump.BumpInContent(vbytes, arg, index)
+	}
 	if err != nil {
 		return err
 	}

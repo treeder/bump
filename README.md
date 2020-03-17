@@ -12,15 +12,17 @@ You must pass in either `--filename` or `--input`.
 
 If using `--filename`, it will overwrite the file with the new version in place, great for automation.
 
-If using `--input`, it will write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable. 
+If using `--input`, it will write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable.
 
-CMD can be one of:
+Use `--index` flag to specify which found versions it should replace. 0 is first one, 2 is second one, -1 is last one, etc.
+
+CMD is optional and can be one of:
 
 * patch - default
 * minor
 * major
 
-Or to pull it out of your last git commit, you can add `[bump major]` or `[bump minor]` to your git commit message, then use:
+To pull the command out of your last git commit, you can add `[bump major]` or `[bump minor]` to your git commit message, then use:
 
 ```sh
 docker run --rm -it -v $PWD:/app -w /app treeder/bump --filename $version_file "$(git log -1 --pretty=%B)"
@@ -47,6 +49,14 @@ Extracts version from a string, eg:
 
 ```sh
 version=$(docker run --rm -v "$PWD":/app treeder/bump  --extract --input "`docker -v`")
+```
+
+### replace
+
+Replace a version string with a version you provide.
+
+```sh
+docker run --rm -v "$PWD":/app treeder/bump  --filename VERSION --replace 1.2.3
 ```
 
 ### format
