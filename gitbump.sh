@@ -4,7 +4,8 @@ set -e
 # oldv=$(git describe --match "v[0-9]*" --abbrev=0 HEAD)
 # This new way seems to work better and avoids the issue above:
 git fetch --tags # checkout action does not get these
-oldv=$(git tag --sort=-refname --list "v[0-9]*" | head -n 1)
+# -v:refname is a version sort
+oldv=$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1)
 echo "oldv: $oldv"
 
 newv=$(docker run --rm -v "$PWD":/app treeder/bump --input "$oldv" patch)
