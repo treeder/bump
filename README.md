@@ -41,6 +41,30 @@ Or just run this if you don't want to download the script:
 wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
 ```
 
+## GitHub Action to bump version
+
+```yaml
+
+  
+name: Bump version
+
+on:
+  push:
+    branches: 
+    - main
+jobs:
+  build-and-deploy:    
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Bump version
+      run: |
+        git config --global user.email "github+actions@gmail.com"
+        git config --global user.name "Actions"
+        git fetch --tags
+        wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
+```
+
 ## Extra Features
 
 ### extract
