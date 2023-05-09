@@ -44,8 +44,6 @@ wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bas
 ## GitHub Action to bump version
 
 ```yaml
-
-  
 name: Bump version
 
 on:
@@ -53,10 +51,10 @@ on:
     branches: 
     - main
 jobs:
-  build-and-deploy:    
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Bump version
       run: |
         git config --global user.email "github+actions@gmail.com"
@@ -64,6 +62,15 @@ jobs:
         git fetch --tags
         wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
 ```
+
+If you get this error: 
+
+```
+remote: Permission to username/repo.git denied to github-actions[bot].
+fatal: unable to access 'https://github.com/username/repo/': The requested URL returned error: 403
+```
+
+Go into the repo settings -> actions -> general -> Workflow permissions and give actions read/write access.
 
 ## Extra Features
 
