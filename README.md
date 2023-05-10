@@ -63,6 +63,28 @@ jobs:
         wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
 ```
 
+## GitHub Action to bump npm version AND git version 🤯
+
+```yaml
+name: Bump version
+
+on:
+  push:
+    branches: 
+    - main
+jobs:
+  bump:    
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Bump version npm style
+      run: |
+        git config --global user.email "github+actions@gmail.com"
+        git config --global user.name "Actions"
+        npm version patch
+        git push --follow-tags
+```
+
 If you get this error: 
 
 ```
