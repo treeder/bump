@@ -48,3 +48,5 @@ jobs:
         docker tag $IMAGE:latest $IMAGE:$version
         docker push $IMAGE:latest
         docker push $IMAGE:$version
+        docker push ghcr.io/treeder/bump:latest
+        docker push ghcr.io/treeder/bump:$version
