@@ -43,10 +43,14 @@ jobs:
         version=$(git tag --sort=-refname --list "v[0-9]*" | head -n 1)
         echo "new version $version"
 
+        # github release
+        docker push ghcr.io/treeder/bump:latest
+        docker push ghcr.io/treeder/bump:$version
+
         # docker it
         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
         docker tag $IMAGE:latest $IMAGE:$version
         docker push $IMAGE:latest
         docker push $IMAGE:$version
-        docker push ghcr.io/treeder/bump:latest
-        docker push ghcr.io/treeder/bump:$version
+
+        
