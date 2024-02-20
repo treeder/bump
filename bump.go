@@ -83,7 +83,7 @@ func replace2(vbytes []byte, options *Options) (old, new string, loc []int, newc
 
 	replace := options.Replace
 	if replace == "" {
-		fmt.Println("bumping", vs, "part", options.Part)
+		// fmt.Println("bumping", vs, "part", options.Part)
 		v := semver.New(vs)
 		switch options.Part {
 		case "major":
