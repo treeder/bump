@@ -12,7 +12,11 @@ You must pass in either `--filename` or `--input`.
 
 If using `--filename`, it will overwrite the file with the new version in place, great for automation.
 
-If using `--input`, it will write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable.
+If using `--input`, it will write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable. Example:
+
+```sh
+docker run --rm -v "$PWD":/app treeder/bump --input 1.2.3
+```
 
 Use `--index` flag to specify which found versions it should replace. 0 is first one, 2 is second one, -1 is last one, etc.
 
