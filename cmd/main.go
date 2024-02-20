@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -29,6 +28,10 @@ func main() {
 			Name:  "input",
 			Usage: "use this if you want to pass in a string to pass, rather than read it from a file. Cannot be used with --filename.",
 		},
+		cli.StringFlag{
+			Name:  "part",
+			Usage: "part to bump, either major, minor or patch. Default is patch.",
+		},
 		cli.BoolFlag{
 			Name:  "extract",
 			Usage: "this will just find the version and return it, does not modify anything. Safe operation.",
@@ -44,6 +47,14 @@ func main() {
 		cli.IntFlag{
 			Name:  "index",
 			Usage: "if zero (default), uses first match. If greater than zero, uses nth match. If less than zero, starts at last match and goes backwards, ie: last match is -1.",
+		},
+		cli.StringFlag{
+			Name:  "prerelease",
+			Usage: "adds a prerelease tag to the version per semver spec",
+		},
+		cli.StringFlag{
+			Name:  "metadata",
+			Usage: "adds metadata to the version per semver spec",
 		},
 	}
 	err := app.Run(os.Args)
@@ -76,7 +87,7 @@ func bumper(c *cli.Context) error {
 	if c.IsSet("input") {
 		vbytes = []byte(c.String("input"))
 	} else {
-		vbytes, err = ioutil.ReadFile(filename)
+		vbytes, err = os.ReadFile(filename)
 		if err != nil {
 			if os.IsNotExist(err) {
 				return fmt.Errorf("%v not found. Use either --filename or --input to change where to look for version.", filename)
@@ -87,14 +98,26 @@ func bumper(c *cli.Context) error {
 
 	index := c.Int("index")
 
+	options := &bump.Options{Index: index}
+	options.PreRelease = c.String("prerelease")
+	options.Metadata = c.String("metadata")
+	if c.IsSet("part") {
+		options.Part = c.String("part")
+		fmt.Println("part is set", options.Part)
+	} else {
+		options.Part = arg
+	}
+
 	var old, new string
 	var newcontent []byte
 	if c.IsSet("replace") {
 		// this will just write the passed in version directly
 		replace := c.String("replace")
-		old, new, _, newcontent, err = bump.ReplaceInContent(vbytes, replace, index)
+		options.Replace = replace
+		options.Part = ""
+		old, new, _, newcontent, err = bump.ReplaceInContent2(vbytes, options)
 	} else {
-		old, new, _, newcontent, err = bump.BumpInContent(vbytes, arg, index)
+		old, new, _, newcontent, err = bump.BumpInContent2(vbytes, options)
 	}
 	if err != nil {
 		return err
@@ -107,7 +130,7 @@ func bumper(c *cli.Context) error {
 	//	fmt.Fprintln(os.Stderr, "Old version:", old)
 	//	fmt.Fprintln(os.Stderr, "New version:", new)
 	if !c.IsSet("input") {
-		err = ioutil.WriteFile(filename, newcontent, 0644)
+		err = os.WriteFile(filename, newcontent, 0644)
 		if err != nil {
 			log.Fatal(err)
 		}

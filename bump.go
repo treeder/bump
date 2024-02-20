@@ -21,10 +21,44 @@ func ReplaceInContent(vbytes []byte, replaceWith string, index int) (old, new st
 	return replace(vbytes, replaceWith, "", index)
 }
 
+func ReplaceInContent2(vbytes []byte, options *Options) (old, new string, loc []int, newcontents []byte, err error) {
+	return replace2(vbytes, options)
+}
+
+func BumpInContent2(vbytes []byte, options *Options) (old, new string, loc []int, newcontents []byte, err error) {
+	return replace2(vbytes, options)
+}
+
+func BumpString(input string, options *Options) (string, error) {
+	old, new, loc, n2, err := replace2([]byte(input), options)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(old, new, loc, n2)
+	return new, nil
+}
+
+type Options struct {
+	Replace    string
+	Part       string
+	Index      int
+	PreRelease string
+	Metadata   string
+}
+
 // if index is set, it will find all matches and choose the one at the given index, -1 means last
 func replace(vbytes []byte, replace, part string, index int) (old, new string, loc []int, newcontents []byte, err error) {
+	options := &Options{
+		Replace: replace,
+		Part:    part,
+		Index:   index,
+	}
+	return replace2(vbytes, options)
+}
+
+func replace2(vbytes []byte, options *Options) (old, new string, loc []int, newcontents []byte, err error) {
 	re := regexp.MustCompile(semverMatcher)
-	if index == 0 {
+	if options.Index == 0 {
 		loc = re.FindIndex(vbytes)
 	} else {
 		locs := re.FindAllIndex(vbytes, -1)
@@ -32,13 +66,13 @@ func replace(vbytes []byte, replace, part string, index int) (old, new string, l
 			return "", "", nil, nil, fmt.Errorf("Did not find semantic version")
 		}
 		locsLen := len(locs)
-		if index >= locsLen {
-			return "", "", nil, nil, fmt.Errorf("semver index to replace out of range. Found %v, want %v", locsLen, index)
+		if options.Index >= locsLen {
+			return "", "", nil, nil, fmt.Errorf("semver index to replace out of range. Found %v, want %v", locsLen, options.Index)
 		}
-		if index < 0 {
-			loc = locs[locsLen+index]
+		if options.Index < 0 {
+			loc = locs[locsLen+options.Index]
 		} else {
-			loc = locs[index]
+			loc = locs[options.Index]
 		}
 	}
 	// fmt.Println(loc)
@@ -47,15 +81,23 @@ func replace(vbytes []byte, replace, part string, index int) (old, new string, l
 	}
 	vs := string(vbytes[loc[0]:loc[1]])
 
+	replace := options.Replace
 	if replace == "" {
+		// fmt.Println("bumping", vs, "part", options.Part)
 		v := semver.New(vs)
-		switch part {
+		switch options.Part {
 		case "major":
 			v.BumpMajor()
 		case "minor":
 			v.BumpMinor()
 		default:
 			v.BumpPatch()
+		}
+		if options.PreRelease != "" {
+			v.PreRelease = semver.PreRelease(options.PreRelease)
+		}
+		if options.Metadata != "" {
+			v.Metadata = options.Metadata
 		}
 		replace = v.String()
 	}

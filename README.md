@@ -5,7 +5,7 @@ Bumps version files and other handy version tools.
 ## Usage
 
 ```sh
-docker run --rm -it -v $PWD:/app -w /app treeder/bump [--filename FILENAME] [--input STRING] [CMD]
+docker run --rm -it -v $PWD:/app -w /app treeder/bump [--filename FILENAME] [--input STRING] [--prerelease alpha1] [--metadata build123] [CMD]
 ```
 
 You must pass in either `--filename` or `--input`.
@@ -15,6 +15,10 @@ If using `--filename`, it will overwrite the file with the new version in place,
 If using `--input`, it will write the new version to STDOUT so you can pipe that in or use it in your scripts as a variable.
 
 Use `--index` flag to specify which found versions it should replace. 0 is first one, 2 is second one, -1 is last one, etc.
+
+`--prerelease` will append a `-` + the prerelease value.
+
+`--metadata` will append a `+` + the metadata value.
 
 CMD is optional and can be one of:
 
