@@ -25,6 +25,7 @@ jobs:
         make docker
 
     - name: release
+      id: release
       env:
         X: Y
         env:
@@ -42,6 +43,7 @@ jobs:
         wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
         version=$(git tag --sort=-refname --list "v[0-9]*" | head -n 1)
         echo "new version $version"
+        echo "VERSION=$version" >> "$GITHUB_OUTPUT"
 
         docker tag $IMAGE:latest $IMAGE:$version
         docker tag $IMAGE:latest ghcr.io/$IMAGE:$version
@@ -60,7 +62,11 @@ jobs:
         password: ${{secrets.GITHUB_TOKEN}}
     
     - name: 'Push image to GitHub Container Registry'
+      env:
+        IMAGE: treeder/bump
+        VERSION: ${{ steps.release.outputs.VERSION }}
       run: |
+        echo "VERSION2=$VERSION"
         docker push ghcr.io/$IMAGE:latest
-        docker push ghcr.io/$IMAGE:$version
+        docker push ghcr.io/$IMAGE:$VERSION
         
