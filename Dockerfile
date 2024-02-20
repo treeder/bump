@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.14-alpine AS build-env
+FROM golang:1-alpine AS build-env
 RUN apk --no-cache add build-base git mercurial gcc
 ENV D=/myapp
 WORKDIR $D
@@ -12,7 +12,7 @@ ADD . $D
 RUN cd $D && go build -o bump ./cmd && cp bump /tmp/
 
 # final stage
-FROM alpine:3.11
+FROM alpine
 RUN apk add --no-cache ca-certificates curl
 WORKDIR /app
 COPY --from=build-env /tmp/bump /script/bump
