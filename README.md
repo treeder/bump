@@ -62,7 +62,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Bump version
       run: |
         git config --global user.email "github+actions@gmail.com"
@@ -84,7 +84,7 @@ jobs:
   bump:    
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Bump version npm style
       run: |
         git config --global user.email "github+actions@gmail.com"
